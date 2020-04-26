@@ -35,19 +35,19 @@ io.on('connection', (socket)=>{
     });
 
     socket.on('newMessage', (msg, callback)=>{
+        const user = getUser(socket.id);
         const filter = new Filter();
         if(filter.isProfane(msg)){
             socket.emit('message', generateMessage('Admin','profane language is not allowed'));
             return callback('profane language is not allowed');        
         }
-        const user = getUser(socket.id);
-        io.to(user.room).emit('message', generateMessage(user.username,msg))
+        io.to(user.room).emit('message', generateMessage(user.username, msg));
         callback();
     });
 
     socket.on('sendLocation', (location, callback) =>{  
         const user = getUser(socket.id);      
-        io.to(user.room).emit('locationMessage', generateLocationMessage(user.username,`https://google.com/maps?q=${location.latitude},${location.longitude}`));
+        io.to(user.room).emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${location.latitude},${location.longitude}`));
         callback('Location shared');
     })
 
